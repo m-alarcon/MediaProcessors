@@ -89,7 +89,7 @@ SUITE(UTESTS_VIDEO_SETTINGS_CTX)
 		 */
 		settings_cppstr= (std::string)"bit_rate_output=1234&"
 				"frame_rate_output=60&width_output=720&height_output=576&"
-				"gop_size=123&conf_preset=ultrafast";
+				"gop_size=123&conf_preset=ultrafast&ql=23";
 		ret_code= video_settings_enc_ctx_restful_put(video_settings_enc_ctx,
 				settings_cppstr.c_str(), NULL);
 		CHECK(ret_code== STAT_SUCCESS);
@@ -100,6 +100,7 @@ SUITE(UTESTS_VIDEO_SETTINGS_CTX)
 		CHECK(video_settings_enc_ctx->gop_size== 123);
 		CHECK(strncmp(video_settings_enc_ctx->conf_preset, "ultrafast",
 				sizeof(video_settings_enc_ctx->conf_preset))== 0);
+		CHECK(video_settings_enc_ctx->ql== 23);
 
 		/* Put settings via JSON */
 		settings_cppstr= (std::string)"{"
@@ -108,7 +109,8 @@ SUITE(UTESTS_VIDEO_SETTINGS_CTX)
 				"\"width_output\":1920,"
 				"\"height_output\":1080,"
 				"\"gop_size\":321,"
-				"\"conf_preset\":\"veryfast\""
+				"\"conf_preset\":\"veryfast\","
+				"\"ql\":99"
 				"}";
 		ret_code= video_settings_enc_ctx_restful_put(video_settings_enc_ctx,
 				settings_cppstr.c_str(), NULL);
@@ -120,7 +122,7 @@ SUITE(UTESTS_VIDEO_SETTINGS_CTX)
 		CHECK(video_settings_enc_ctx->gop_size== 321);
 		CHECK(strncmp(video_settings_enc_ctx->conf_preset, "veryfast",
 				sizeof(video_settings_enc_ctx->conf_preset))== 0);
-
+		CHECK(video_settings_enc_ctx->ql== 99);
 		/* Get RESTful char string */
 		ret_code= video_settings_enc_ctx_restful_get(video_settings_enc_ctx,
 				&cjson_rest, NULL);

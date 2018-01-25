@@ -652,7 +652,7 @@ int main(int argc, char* argv[])
     const char *video_settings=
     		"width_output="VIDEO_WIDTH
 			"&height_output="VIDEO_HEIGHT;
-#define MPEG2_VIDEO
+#define LHE_VIDEO
 #ifdef MPEG2_VIDEO
     const proc_if_t *proc_if_enc= &proc_if_ffmpeg_m2v_enc;
     const proc_if_t *proc_if_dec= &proc_if_ffmpeg_m2v_dec;

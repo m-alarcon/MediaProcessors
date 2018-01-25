@@ -84,7 +84,7 @@ extern "C" {
  * For the audio:
  * 'LD_LIBRARY_PATH=<...>/lib <...>/bin/ffplay -f s16le -channels 2 /my/output/file.wav'
  */
-//#define WRITE_2_OFILE
+#define WRITE_2_OFILE
 
 /* Implementation note: we do not change output with/height settings to be
  * able to validate encoding-decoding loop using PSNR measurements (frames

@@ -74,6 +74,7 @@ int video_settings_enc_ctx_init(
 	video_settings_enc_ctx->gop_size= 15;
 	memset((void*)video_settings_enc_ctx->conf_preset, 0,
 			sizeof(video_settings_enc_ctx->conf_preset));
+	video_settings_enc_ctx->ql= 99;
 	return STAT_SUCCESS;
 }
 
@@ -113,7 +114,7 @@ int video_settings_enc_ctx_restful_put(
 	char *bit_rate_output_str= NULL, *frame_rate_output_str= NULL,
 			*width_output_str= NULL, *height_output_str= NULL,
 			*gop_size_str= NULL, *sample_fmt_input_str= NULL,
-			*profile_str= NULL, *conf_preset_str= NULL;
+			*profile_str= NULL, *conf_preset_str= NULL, *ql_str= NULL;
 	LOG_CTX_INIT(log_ctx);
 
 	/* Check arguments */
@@ -167,6 +168,11 @@ int video_settings_enc_ctx_restful_put(
 			video_settings_enc_ctx->conf_preset[strlen(conf_preset_str)]= 0;
 		}
 
+		/* 'ql' */
+		ql_str= uri_parser_query_str_get_value("ql", str);
+		if(ql_str!= NULL)
+			video_settings_enc_ctx->ql= atoll(ql_str);
+
 	} else {
 
 		/* In the case string format is JSON-REST, parse to cJSON structure */
@@ -208,6 +214,10 @@ int video_settings_enc_ctx_restful_put(
 					cjson_aux->valuestring, strlen(cjson_aux->valuestring));
 			video_settings_enc_ctx->conf_preset
 			[strlen(cjson_aux->valuestring)]= 0;
+
+		cjson_aux= cJSON_GetObjectItem(cjson_rest, "ql");
+		if(cjson_aux!= NULL)
+			video_settings_enc_ctx->ql= cjson_aux->valuedouble;
 		}
 	}
 
@@ -231,6 +241,8 @@ end:
 		free(profile_str);
 	if(conf_preset_str!= NULL)
 		free(conf_preset_str);
+	if(ql_str!= NULL)
+		free(ql_str);
 	return end_code;
 }
 
@@ -258,7 +270,8 @@ int video_settings_enc_ctx_restful_get(
 	 *     "width_output":number,
 	 *     "height_output":number,
 	 *     "gop_size":number,
-	 *     "conf_preset":string
+	 *     "conf_preset":string,
+	 *	   "ql" :number
 	 * }
 	 */
 
@@ -301,6 +314,11 @@ int video_settings_enc_ctx_restful_get(
 	CHECK_DO(cjson_aux!= NULL, goto end);
 	cJSON_AddItemToObject(cjson_rest, "conf_preset", cjson_aux);
 
+	/* 'ql' */
+	cjson_aux= cJSON_CreateNumber((int)video_settings_enc_ctx->ql);
+	CHECK_DO(cjson_aux!= NULL, goto end);
+	cJSON_AddItemToObject(cjson_rest, "ql", cjson_aux);
+
 	*ref_cjson_rest= cjson_rest;
 	cjson_rest= NULL;
 	end_code= STAT_SUCCESS;
@@ -342,6 +360,7 @@ int video_settings_dec_ctx_init(
 	// Reserved for future use
 	// Initialize here structure members, for example:
 	// video_settings_dec_ctx->varX= valueX;
+	
 
 	return STAT_SUCCESS;
 }

@@ -103,6 +103,12 @@ int ffmpeg_video_enc_ctx_init(ffmpeg_video_enc_ctx_t *ffmpeg_video_enc_ctx,
 	avcodecctx->gop_size= video_settings_enc_ctx->gop_size;
 	avcodecctx->pix_fmt= ffmpeg_video_enc_ctx->ffmpeg_pix_fmt_input=
 			AV_PIX_FMT_YUV420P; // natively supported
+
+    if(video_settings_enc_ctx->ql>= 0 && video_settings_enc_ctx->ql< 100) {
+        av_opt_set_int(avcodecctx->priv_data, "ql",
+                video_settings_enc_ctx->ql, 0);
+    }
+
 	if(strlen(video_settings_enc_ctx->conf_preset)> 0) {
 		av_opt_set(avcodecctx->priv_data, "preset",
 				video_settings_enc_ctx->conf_preset, 0);

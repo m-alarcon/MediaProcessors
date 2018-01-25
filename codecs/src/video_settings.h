@@ -65,6 +65,10 @@ typedef struct video_settings_enc_ctx_s {
 	 * Video encoder configuration preset, if applicable.
 	 */
 	char conf_preset[128];
+	/**
+	 * Video encoder ql metric
+	 */
+	int ql;
 } video_settings_enc_ctx_t;
 
 /**
