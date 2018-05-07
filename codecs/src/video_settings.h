@@ -69,6 +69,17 @@ typedef struct video_settings_enc_ctx_s {
 	 * Video encoder ql metric
 	 */
 	int ql;
+	/**
+	 * Video encoder Rectangle params
+	 */
+	int num_rectangle;
+	int active;
+	int protection;
+	int xini;
+	int xfin;
+	int yini;
+	int yfin;
+
 } video_settings_enc_ctx_t;
 
 /**

@@ -75,6 +75,13 @@ int video_settings_enc_ctx_init(
 	memset((void*)video_settings_enc_ctx->conf_preset, 0,
 			sizeof(video_settings_enc_ctx->conf_preset));
 	video_settings_enc_ctx->ql= 99;
+	video_settings_enc_ctx->num_rectangle= 3;
+	video_settings_enc_ctx->active= 0;
+	video_settings_enc_ctx->protection= 1;
+	video_settings_enc_ctx->xini= 2;
+	video_settings_enc_ctx->xfin= 100;
+	video_settings_enc_ctx->yini= 3;
+	video_settings_enc_ctx->yfin= 99;
 	return STAT_SUCCESS;
 }
 
@@ -114,7 +121,8 @@ int video_settings_enc_ctx_restful_put(
 	char *bit_rate_output_str= NULL, *frame_rate_output_str= NULL,
 			*width_output_str= NULL, *height_output_str= NULL,
 			*gop_size_str= NULL, *sample_fmt_input_str= NULL,
-			*profile_str= NULL, *conf_preset_str= NULL, *ql_str= NULL;
+			*profile_str= NULL, *conf_preset_str= NULL, *ql_str= NULL, *num_rectangle_str= NULL,
+			*active_str= NULL, *protection_str= NULL, *xini_str= NULL, *xfin_str= NULL, *yini_str= NULL, *yfin_str= NULL;
 	LOG_CTX_INIT(log_ctx);
 
 	/* Check arguments */
@@ -173,6 +181,41 @@ int video_settings_enc_ctx_restful_put(
 		if(ql_str!= NULL)
 			video_settings_enc_ctx->ql= atoll(ql_str);
 
+		/*int num_rectangle;*/
+		num_rectangle_str= uri_parser_query_str_get_value("num_rectangle", str);
+		if(num_rectangle_str!= NULL)
+			video_settings_enc_ctx->num_rectangle= atoll(num_rectangle_str);
+
+		/*bool active;*/
+		active_str= uri_parser_query_str_get_value("active", str);
+		if(active_str!= NULL)
+			video_settings_enc_ctx->active= atoll(active_str);
+
+		/*bool protection;*/
+		protection_str= uri_parser_query_str_get_value("protection", str);
+		if(protection_str!= NULL)
+			video_settings_enc_ctx->protection= atoll(protection_str);
+
+		/*int xini;*/
+		xini_str= uri_parser_query_str_get_value("xini", str);
+		if(xini_str!= NULL)
+			video_settings_enc_ctx->xini= atoll(xini_str);
+
+		/*int xfin;*/
+		xfin_str= uri_parser_query_str_get_value("xfin", str);
+		if(xfin_str!= NULL)
+			video_settings_enc_ctx->xfin= atoll(xfin_str);
+
+		/*int yini;*/
+		yini_str= uri_parser_query_str_get_value("yini", str);
+		if(yini_str!= NULL)
+			video_settings_enc_ctx->yini= atoll(yini_str);
+
+		/*int yfin;*/
+		yfin_str= uri_parser_query_str_get_value("yfin", str);
+		if(yfin_str!= NULL)
+			video_settings_enc_ctx->yfin= atoll(yfin_str);
+
 	} else {
 
 		/* In the case string format is JSON-REST, parse to cJSON structure */
@@ -215,9 +258,46 @@ int video_settings_enc_ctx_restful_put(
 			video_settings_enc_ctx->conf_preset
 			[strlen(cjson_aux->valuestring)]= 0;
 
+		/* 'ql' */
 		cjson_aux= cJSON_GetObjectItem(cjson_rest, "ql");
 		if(cjson_aux!= NULL)
 			video_settings_enc_ctx->ql= cjson_aux->valuedouble;
+
+		/*int num_rectangle;*/
+		cjson_aux= cJSON_GetObjectItem(cjson_rest, "num_rectangle");
+		if(cjson_aux!= NULL)
+			video_settings_enc_ctx->num_rectangle= cjson_aux->valuedouble;
+
+		/*bool active;*/
+		cjson_aux= cJSON_GetObjectItem(cjson_rest, "active");
+		if(cjson_aux!= NULL)
+			video_settings_enc_ctx->active= cjson_aux->valuedouble;
+
+		/*bool protection;*/
+		cjson_aux= cJSON_GetObjectItem(cjson_rest, "protection");
+		if(cjson_aux!= NULL)
+			video_settings_enc_ctx->protection= cjson_aux->valuedouble;
+
+		/*int xini;*/
+		cjson_aux= cJSON_GetObjectItem(cjson_rest, "xini");
+		if(cjson_aux!= NULL)
+			video_settings_enc_ctx->xini= cjson_aux->valuedouble;
+
+		/*int xfin;*/
+		cjson_aux= cJSON_GetObjectItem(cjson_rest, "xfin");
+		if(cjson_aux!= NULL)
+			video_settings_enc_ctx->xfin= cjson_aux->valuedouble;
+
+		/*int yini;*/
+		cjson_aux= cJSON_GetObjectItem(cjson_rest, "yini");
+		if(cjson_aux!= NULL)
+			video_settings_enc_ctx->yini= cjson_aux->valuedouble;
+
+		/*int yfin;*/
+		cjson_aux= cJSON_GetObjectItem(cjson_rest, "yfin");
+		if(cjson_aux!= NULL)
+			video_settings_enc_ctx->yfin= cjson_aux->valuedouble;
+
 		}
 	}
 
@@ -243,6 +323,20 @@ end:
 		free(conf_preset_str);
 	if(ql_str!= NULL)
 		free(ql_str);
+	if(num_rectangle_str!= NULL)
+		free(num_rectangle_str);
+	if(active_str!= NULL)
+		free(active_str);
+	if(protection_str!= NULL)
+		free(protection_str);
+	if(xini_str!= NULL)
+		free(xini_str);
+	if(xfin_str!= NULL)
+		free(xfin_str);
+	if(yini_str!= NULL)
+		free(yini_str);
+	if(yfin_str!= NULL)
+		free(yfin_str);
 	return end_code;
 }
 
@@ -318,6 +412,41 @@ int video_settings_enc_ctx_restful_get(
 	cjson_aux= cJSON_CreateNumber((int)video_settings_enc_ctx->ql);
 	CHECK_DO(cjson_aux!= NULL, goto end);
 	cJSON_AddItemToObject(cjson_rest, "ql", cjson_aux);
+
+	/* 'num_rectangle' */
+	cjson_aux= cJSON_CreateNumber((int)video_settings_enc_ctx->num_rectangle);
+	CHECK_DO(cjson_aux!= NULL, goto end);
+	cJSON_AddItemToObject(cjson_rest, "num_rectangle", cjson_aux);
+
+	/* 'active' */
+	cjson_aux= cJSON_CreateNumber((int)video_settings_enc_ctx->active);
+	CHECK_DO(cjson_aux!= NULL, goto end);
+	cJSON_AddItemToObject(cjson_rest, "active", cjson_aux);
+
+	/* 'protection' */
+	cjson_aux= cJSON_CreateNumber((int)video_settings_enc_ctx->protection);
+	CHECK_DO(cjson_aux!= NULL, goto end);
+	cJSON_AddItemToObject(cjson_rest, "protection", cjson_aux);
+
+	/* 'xini' */
+	cjson_aux= cJSON_CreateNumber((int)video_settings_enc_ctx->xini);
+	CHECK_DO(cjson_aux!= NULL, goto end);
+	cJSON_AddItemToObject(cjson_rest, "xini", cjson_aux);
+
+	/* 'xfin' */
+	cjson_aux= cJSON_CreateNumber((int)video_settings_enc_ctx->xfin);
+	CHECK_DO(cjson_aux!= NULL, goto end);
+	cJSON_AddItemToObject(cjson_rest, "xfin", cjson_aux);
+
+	/* 'yini' */
+	cjson_aux= cJSON_CreateNumber((int)video_settings_enc_ctx->yini);
+	CHECK_DO(cjson_aux!= NULL, goto end);
+	cJSON_AddItemToObject(cjson_rest, "yini", cjson_aux);
+
+	/* 'yfin' */
+	cjson_aux= cJSON_CreateNumber((int)video_settings_enc_ctx->yfin);
+	CHECK_DO(cjson_aux!= NULL, goto end);
+	cJSON_AddItemToObject(cjson_rest, "yfin", cjson_aux);
 
 	*ref_cjson_rest= cjson_rest;
 	cjson_rest= NULL;

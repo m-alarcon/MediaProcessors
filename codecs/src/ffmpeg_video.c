@@ -109,6 +109,23 @@ int ffmpeg_video_enc_ctx_init(ffmpeg_video_enc_ctx_t *ffmpeg_video_enc_ctx,
                 video_settings_enc_ctx->ql, 0);
     }
 
+    if(video_settings_enc_ctx->num_rectangle >= 0 && video_settings_enc_ctx->num_rectangle < 5) {
+        av_opt_set_int(avcodecctx->priv_data, "num_rectangle",
+                video_settings_enc_ctx->num_rectangle, 0);
+        av_opt_set_int(avcodecctx->priv_data, "active",
+                video_settings_enc_ctx->active, 0);
+        av_opt_set_int(avcodecctx->priv_data, "protection",
+                video_settings_enc_ctx->protection, 0);
+        av_opt_set_int(avcodecctx->priv_data, "xini",
+                video_settings_enc_ctx->xini, 0);
+        av_opt_set_int(avcodecctx->priv_data, "xfin",
+                video_settings_enc_ctx->xfin, 0);
+        av_opt_set_int(avcodecctx->priv_data, "yini",
+                video_settings_enc_ctx->yini, 0);
+        av_opt_set_int(avcodecctx->priv_data, "yfin",
+                video_settings_enc_ctx->yfin, 0);
+    }
+
 	if(strlen(video_settings_enc_ctx->conf_preset)> 0) {
 		av_opt_set(avcodecctx->priv_data, "preset",
 				video_settings_enc_ctx->conf_preset, 0);
