@@ -82,6 +82,9 @@ int video_settings_enc_ctx_init(
 	video_settings_enc_ctx->xfin= 100;
 	video_settings_enc_ctx->yini= 3;
 	video_settings_enc_ctx->yfin= 99;
+	video_settings_enc_ctx->block_gop= 0;
+	video_settings_enc_ctx->down_mode= 0;
+	video_settings_enc_ctx->skip_frames= 0;
 	return STAT_SUCCESS;
 }
 
@@ -122,7 +125,8 @@ int video_settings_enc_ctx_restful_put(
 			*width_output_str= NULL, *height_output_str= NULL,
 			*gop_size_str= NULL, *sample_fmt_input_str= NULL,
 			*profile_str= NULL, *conf_preset_str= NULL, *ql_str= NULL, *num_rectangle_str= NULL,
-			*active_str= NULL, *protection_str= NULL, *xini_str= NULL, *xfin_str= NULL, *yini_str= NULL, *yfin_str= NULL;
+			*active_str= NULL, *protection_str= NULL, *xini_str= NULL, *xfin_str= NULL, *yini_str= NULL, *yfin_str= NULL,
+			*block_gop_str= NULL, *down_mode_str= NULL, *skip_frames_str= NULL;
 	LOG_CTX_INIT(log_ctx);
 
 	/* Check arguments */
@@ -216,6 +220,21 @@ int video_settings_enc_ctx_restful_put(
 		if(yfin_str!= NULL)
 			video_settings_enc_ctx->yfin= atoll(yfin_str);
 
+		/* 'gop' */
+		block_gop_str= uri_parser_query_str_get_value("block_gop", str);
+		if(block_gop_str!= NULL)
+			video_settings_enc_ctx->block_gop= atoll(block_gop_str);
+
+		/* 'down_mode' */
+		down_mode_str= uri_parser_query_str_get_value("down_mode", str);
+		if(down_mode_str!= NULL)
+			video_settings_enc_ctx->down_mode= atoll(down_mode_str);
+		
+		/* 'skip_frames' */
+		skip_frames_str= uri_parser_query_str_get_value("skip_frames", str);
+		if(skip_frames_str!= NULL)
+			video_settings_enc_ctx->skip_frames= atoll(skip_frames_str);
+
 	} else {
 
 		/* In the case string format is JSON-REST, parse to cJSON structure */
@@ -298,6 +317,21 @@ int video_settings_enc_ctx_restful_put(
 		if(cjson_aux!= NULL)
 			video_settings_enc_ctx->yfin= cjson_aux->valuedouble;
 
+		/* 'gop' */
+		cjson_aux= cJSON_GetObjectItem(cjson_rest, "block_gop");
+		if(cjson_aux!= NULL)
+			video_settings_enc_ctx->block_gop= cjson_aux->valuedouble;
+
+		/* 'down_mode' */
+		cjson_aux= cJSON_GetObjectItem(cjson_rest, "down_mode");
+		if(cjson_aux!= NULL)
+			video_settings_enc_ctx->down_mode= cjson_aux->valuedouble;
+
+		/* 'skip_frames' */
+		cjson_aux= cJSON_GetObjectItem(cjson_rest, "skip_frames");
+		if(cjson_aux!= NULL)
+			video_settings_enc_ctx->skip_frames= cjson_aux->valuedouble;
+
 		}
 	}
 
@@ -337,6 +371,12 @@ end:
 		free(yini_str);
 	if(yfin_str!= NULL)
 		free(yfin_str);
+	if(block_gop_str!= NULL)
+		free(block_gop_str);
+	if(down_mode_str!= NULL)
+		free(down_mode_str);
+	if(skip_frames_str!= NULL)
+		free(skip_frames_str);
 	return end_code;
 }
 
@@ -447,6 +487,21 @@ int video_settings_enc_ctx_restful_get(
 	cjson_aux= cJSON_CreateNumber((int)video_settings_enc_ctx->yfin);
 	CHECK_DO(cjson_aux!= NULL, goto end);
 	cJSON_AddItemToObject(cjson_rest, "yfin", cjson_aux);
+
+	/* 'gop' */
+	cjson_aux= cJSON_CreateNumber((int)video_settings_enc_ctx->block_gop);
+	CHECK_DO(cjson_aux!= NULL, goto end);
+	cJSON_AddItemToObject(cjson_rest, "block_gop", cjson_aux);
+
+	/* 'down_mode' */
+	cjson_aux= cJSON_CreateNumber((int)video_settings_enc_ctx->down_mode);
+	CHECK_DO(cjson_aux!= NULL, goto end);
+	cJSON_AddItemToObject(cjson_rest, "down_mode", cjson_aux);
+
+	/* 'skip_frames' */
+	cjson_aux= cJSON_CreateNumber((int)video_settings_enc_ctx->skip_frames);
+	CHECK_DO(cjson_aux!= NULL, goto end);
+	cJSON_AddItemToObject(cjson_rest, "skip_frames", cjson_aux);
 
 	*ref_cjson_rest= cjson_rest;
 	cjson_rest= NULL;

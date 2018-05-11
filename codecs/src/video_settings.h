@@ -80,6 +80,21 @@ typedef struct video_settings_enc_ctx_s {
 	int yini;
 	int yfin;
 
+	/**
+	 * LHE Video encoder gop param
+	 */
+	int block_gop;
+
+	/**
+	 * Video encoder downsampling mode
+	 */
+	int down_mode;
+
+	/**
+	 * Video encoder skip frames param
+	 */
+	int skip_frames;
+
 } video_settings_enc_ctx_t;
 
 /**

@@ -126,6 +126,22 @@ int ffmpeg_video_enc_ctx_init(ffmpeg_video_enc_ctx_t *ffmpeg_video_enc_ctx,
                 video_settings_enc_ctx->yfin, 0);
     }
 
+    if(video_settings_enc_ctx->block_gop >= 0 && video_settings_enc_ctx->block_gop < 32000) {
+        av_opt_set_int(avcodecctx->priv_data, "block_gop",
+                video_settings_enc_ctx->block_gop, 0);
+    }
+
+    if(video_settings_enc_ctx->down_mode>= 0 && video_settings_enc_ctx->down_mode< 3) {
+        av_opt_set_int(avcodecctx->priv_data, "down_mode",
+                video_settings_enc_ctx->down_mode, 0);
+    }
+
+    if(video_settings_enc_ctx->skip_frames >= 0 && video_settings_enc_ctx->skip_frames <= 100) {
+        av_opt_set_int(avcodecctx->priv_data, "skip_frames",
+                video_settings_enc_ctx->skip_frames, 0);
+    }
+
+
 	if(strlen(video_settings_enc_ctx->conf_preset)> 0) {
 		av_opt_set(avcodecctx->priv_data, "preset",
 				video_settings_enc_ctx->conf_preset, 0);
