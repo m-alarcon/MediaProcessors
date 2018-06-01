@@ -72,8 +72,8 @@ int video_settings_enc_ctx_init(
 
 	video_settings_enc_ctx->bit_rate_output= 300*1024;
 	video_settings_enc_ctx->frame_rate_output= 15;
-	video_settings_enc_ctx->width_output= 352;
-	video_settings_enc_ctx->height_output= 288;
+	video_settings_enc_ctx->width_output= 640;//352;
+	video_settings_enc_ctx->height_output= 480;//288;
 	video_settings_enc_ctx->gop_size= 15;
 	memset((void*)video_settings_enc_ctx->conf_preset, 0,
 			sizeof(video_settings_enc_ctx->conf_preset));
