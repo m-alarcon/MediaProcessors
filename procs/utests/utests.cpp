@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 {
 	int ret_code;
 
-	if(log_module_open()!= STAT_SUCCESS) {
+	/*if(log_module_open()!= STAT_SUCCESS) {
 		printf("Could not initialize LOG module\n");
 		return STAT_ERROR;
 	}
@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 		printf("Error occurred in u-testing (exit code: %d)\n", ret_code);
 		return ret_code;
 	}
-
-	log_module_close();
+	*/
+	//log_module_close();
 	return 0;
 }

@@ -361,6 +361,7 @@ int proc_vopt(proc_ctx_t *proc_ctx, const char *tag, va_list arg)
 	int end_code= STAT_ERROR;
 	const proc_if_t *proc_if= NULL;
 	int (*rest_put)(proc_ctx_t *proc_ctx, const char *str)= NULL;
+	int (*socket_put)(proc_ctx_t *proc_ctx, const char *str)= NULL; 
 	int (*opt)(proc_ctx_t *proc_ctx, const char *tag, va_list arg)= NULL;
 	LOG_CTX_INIT(NULL);
 
@@ -386,6 +387,10 @@ int proc_vopt(proc_ctx_t *proc_ctx, const char *tag, va_list arg)
 		end_code= STAT_ENOTFOUND;
 		if(proc_if!= NULL && (rest_put= proc_if->rest_put)!= NULL)
 			end_code= rest_put(proc_ctx, va_arg(arg, const char*));
+	} else if(TAG_IS("PROC_SOCKET_PUT")) {
+		end_code= STAT_ENOTFOUND;
+		if (proc_if!= NULL && (socket_put= proc_if->socket_put)!=NULL)
+			end_code= socket_put(proc_ctx, va_arg(arg,const char*));
 	} else {
 		if(proc_if!= NULL && (opt= proc_if->opt)!= NULL)
 			end_code= opt(proc_ctx, tag, arg);

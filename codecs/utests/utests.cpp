@@ -35,7 +35,7 @@ extern "C" {
 
 int main(int argc, char *argv[])
 {
-	int ret_code;
+	/*int ret_code;
 
 	if(log_module_open()!= STAT_SUCCESS) {
 		printf("Could not initialize LOG module\n");
@@ -48,5 +48,5 @@ int main(int argc, char *argv[])
 	}
 
 	log_module_close();
-	return 0;
+	*/return 0;
 }
