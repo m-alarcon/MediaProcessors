@@ -651,6 +651,7 @@ int video_settings_enc_ctx_socket_put(
 
 				video_settings_enc_ctx->num_rectangle = num_rect_int;
 				video_settings_enc_ctx->active = 1;
+				video_settings_enc_ctx->protection = 1;
 				video_settings_enc_ctx->xini = xini_int;
 				video_settings_enc_ctx->xfin = xfin_int;
 				video_settings_enc_ctx->yini = yini_int;
@@ -678,13 +679,13 @@ int video_settings_enc_ctx_socket_put(
 				//Block Gop
 				printf("Datos del str: %s\n" , str);
 
-				break:
+				break;
 
 			case 9:
 				//Down Mode
 				printf("Datos del str: %s\n" , str);
 
-				break:
+				break;
 
 			case 10:
 				//Skip Frames
