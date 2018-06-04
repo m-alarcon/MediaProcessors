@@ -455,10 +455,17 @@ int video_settings_enc_ctx_socket_put(
 
 	    	char function[20] = "";
 	    	char value[20] = "";
+		char width_value[20] = "";
+		char height_value[20] = "";
+		char num_rect_value[5] = "";
+		char xini_value[20] = "";
+ 		char xfin_value[20] = "";
+		char yini_value[20] = "";
+		char yfin_value[20] = "";
 	    	int aux= 0, j= 0, h= 0;
 
-		for (int i=0;i<sizeof(str);i++)
-			{
+		for (int i=0;i<strlen(str);i++)
+		{
 			if(str[i] != ',' && aux== 0){
 				function[0+j] = str[i];
 				j = j + 1;
@@ -469,7 +476,7 @@ int video_settings_enc_ctx_socket_put(
 				h = h + 1;
 			}
 		}
-
+	    	aux= 0, j= 0, h= 0;
 		int res1 = atoi(function);
 		int res2 = atoi(value);
 
@@ -543,16 +550,37 @@ int video_settings_enc_ctx_socket_put(
 				break;
 
 			case 5:
-				//Width Output 
+				//Width and Height Output
 				printf("Datos del str: %s\n" , str);
-				printf("\n [SOCKET] el valor de Width Output = %d\n",res2);
-				video_settings_enc_ctx->width_output= res2;
+				for (int i=0;i<strlen(value);i++)
+					{
+					if(value[i] != ';' && aux== 0){
+						width_value[0+j] = value[i];
+						j = j + 1;
+					}else if (value[i] == ';'){
+						aux = 1;
+					}else{
+						height_value[0+h] = value[i];
+						h = h +1;
+					}
+				}
+				
+				int width_int = atoi(width_value);
+				int height_int = atoi(height_value);
+
+				video_settings_enc_ctx->width_output= width_int;
+				video_settings_enc_ctx->height_output= height_int;
+				printf("\nwidth: %d\n", width_int);
+				printf("\nheight: %d\n", height_int);
+
 				clock_gettime( CLOCK_REALTIME, &ts2);
 				printf("\nTS2: %f\n", (float) (1.0*ts2.tv_nsec)*1e-9);
 				printf("TS2 - TS1: %f\n", (float) (1.0*(1.0*ts2.tv_nsec - ts1.tv_nsec*1.0)*1e-9 + 1.0*ts2.tv_sec - 1.0*ts1.tv_sec ));
 
 				memset(function,'\0', sizeof(function));
 				memset(value,'\0', sizeof(value));
+				memset(width_value,'\0',sizeof(width_value));
+				memset(height_value,'\0',sizeof(height_value));
 
 				h = 0;
 				j = 0;
@@ -560,20 +588,108 @@ int video_settings_enc_ctx_socket_put(
 				break;
 
 			case 6:
-				//Height Output 
+				//Change encoder
+				
+				break;
+
+			case 7:
+				//Rectangles
 				printf("Datos del str: %s\n" , str);
-				printf("\n [SOCKET] el valor de Height Output = %d\n",res2);
-				video_settings_enc_ctx->height_output= res2;
-				clock_gettime( CLOCK_REALTIME, &ts2);
-				printf("\nTS2: %f\n", (float) (1.0*ts2.tv_nsec)*1e-9);
-				printf("TS2 - TS1: %f\n", (float) (1.0*(1.0*ts2.tv_nsec - ts1.tv_nsec*1.0)*1e-9 + 1.0*ts2.tv_sec - 1.0*ts1.tv_sec ));
+				printf("\n VALUE: %s \n", value);
+				int num_rect = 0, k = 0, m=0, n=0;
+				int aux = 0;
+
+				for (int i=0;i<strlen(value);i++)
+				{
+					if(value[i] != ';' && aux == 0 && num_rect == 0){
+						num_rect_value[0] = value[i];
+						num_rect = 1;
+					}
+
+					else if(value[i] == ';') {
+						aux = aux + 1;	
+					}
+			
+					switch(aux){
+						case 1:
+						//Buscamos xini
+							if(value[i] != ';'){
+								xini_value[0+j] = value[i];
+								j = j + 1;
+							}
+							break;
+
+						case 2:
+						//Buscamos xfin
+							if(value[i] != ';'){
+								xfin_value[0+k] = value[i];
+								k = k + 1;
+							}
+							break;
+						case 3:
+						//Buscamos yini
+							if(value[i] != ';'){
+								yini_value[0+m] = value[i];
+								m = m + 1;
+							}
+							break;
+						case 4:
+						//Buscamos yfin
+							if(value[i] != ';'){
+								yfin_value[0+n] = value[i];
+								n = n + 1;
+							}
+							break;
+					}
+				}
+
+				int num_rect_int = atoi(num_rect_value);
+				int xini_int = atoi(xini_value);
+				int xfin_int = atoi(xfin_value);
+				int yini_int = atoi(yini_value);
+				int yfin_int = atoi(yfin_value);
+
+				video_settings_enc_ctx->num_rectangle = num_rect_int;
+				video_settings_enc_ctx->active = 1;
+				video_settings_enc_ctx->xini = xini_int;
+				video_settings_enc_ctx->xfin = xfin_int;
+				video_settings_enc_ctx->yini = yini_int;
+				video_settings_enc_ctx->yfin = yfin_int;
+
+				printf("\nnum_rect_int: %d\n", num_rect_int);
+				printf("\nxini_int: %d\n", xini_int);
+				printf("\nxfin_int: %d\n", xfin_int);
+				printf("\nyini_int: %d\n", yini_int);
+				printf("\nyfin_int: %d\n", yfin_int);
 
 				memset(function,'\0', sizeof(function));
 				memset(value,'\0', sizeof(value));
+				memset(num_rect_value,'\0',sizeof(num_rect_value));
+				memset(xini_value,'\0',sizeof(xini_value));
+				memset(xfin_value,'\0',sizeof(xfin_value));
+				memset(yini_value,'\0',sizeof(yini_value));
+				memset(yfin_value,'\0',sizeof(yfin_value));
 
-				h = 0;
-				j = 0;
-				aux = 0;
+				h = 0, j = 0, k = 0, m = 0, n = 0, aux = 0;
+				
+				break;
+
+			case 8:
+				//Block Gop
+				printf("Datos del str: %s\n" , str);
+
+				break:
+
+			case 9:
+				//Down Mode
+				printf("Datos del str: %s\n" , str);
+
+				break:
+
+			case 10:
+				//Skip Frames
+				printf("Datos del str: %s\n" , str);
+
 				break;
 		}
 	}
