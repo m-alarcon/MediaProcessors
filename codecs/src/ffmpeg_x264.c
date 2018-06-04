@@ -157,6 +157,7 @@ const proc_if_t proc_if_ffmpeg_x264_enc=
 	ffmpeg_x264_enc_rest_put,
 	ffmpeg_x264_enc_rest_get,
 	ffmpeg_x264_enc_process_frame,
+	NULL, //socket
 	NULL, // no extra options
 	proc_frame_ctx_2_avframe,
 	avframe_release,
@@ -173,6 +174,7 @@ const proc_if_t proc_if_ffmpeg_x264_dec=
 	ffmpeg_x264_dec_rest_put,
 	ffmpeg_x264_dec_rest_get,
 	ffmpeg_x264_dec_process_frame,
+	NULL, //socket
 	NULL, // no extra options
 	proc_frame_ctx_2_avpacket,
 	avpacket_release,
