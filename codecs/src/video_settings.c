@@ -458,6 +458,8 @@ int video_settings_enc_ctx_socket_put(
 		char width_value[20] = "";
 		char height_value[20] = "";
 		char num_rect_value[5] = "";
+		char active_value[5] = "";
+		char protection_value[5] = "";
 		char xini_value[20] = "";
  		char xfin_value[20] = "";
 		char yini_value[20] = "";
@@ -612,6 +614,20 @@ int video_settings_enc_ctx_socket_put(
 			
 					switch(aux){
 						case 1:
+						//Active
+							if(value[i] != ';'){
+								active_value[0] = value[i];
+							}
+							break;
+
+						case 2:
+						//Protection
+							if(value[i] != ';'){
+								protection_value[0] = value[i];
+							}
+							break;
+
+						case 3:
 						//Buscamos xini
 							if(value[i] != ';'){
 								xini_value[0+j] = value[i];
@@ -619,21 +635,21 @@ int video_settings_enc_ctx_socket_put(
 							}
 							break;
 
-						case 2:
+						case 4:
 						//Buscamos xfin
 							if(value[i] != ';'){
 								xfin_value[0+k] = value[i];
 								k = k + 1;
 							}
 							break;
-						case 3:
+						case 5:
 						//Buscamos yini
 							if(value[i] != ';'){
 								yini_value[0+m] = value[i];
 								m = m + 1;
 							}
 							break;
-						case 4:
+						case 6:
 						//Buscamos yfin
 							if(value[i] != ';'){
 								yfin_value[0+n] = value[i];
@@ -644,20 +660,33 @@ int video_settings_enc_ctx_socket_put(
 				}
 
 				int num_rect_int = atoi(num_rect_value);
+				int active_int = atoi(active_value);
+				int protection_int = atoi(protection_value);
 				int xini_int = atoi(xini_value);
 				int xfin_int = atoi(xfin_value);
 				int yini_int = atoi(yini_value);
 				int yfin_int = atoi(yfin_value);
 
+				if(active_int==1){
+					video_settings_enc_ctx->active = 1;
+				}else{
+					video_settings_enc_ctx->active = 0;
+				}
+				if(protection_int==1){
+					video_settings_enc_ctx->protection = 1;
+				}else{
+					video_settings_enc_ctx->protection = 0;
+				}
+
 				video_settings_enc_ctx->num_rectangle = num_rect_int;
-				video_settings_enc_ctx->active = 1;
-				video_settings_enc_ctx->protection = 1;
 				video_settings_enc_ctx->xini = xini_int;
 				video_settings_enc_ctx->xfin = xfin_int;
 				video_settings_enc_ctx->yini = yini_int;
 				video_settings_enc_ctx->yfin = yfin_int;
 
 				printf("\nnum_rect_int: %d\n", num_rect_int);
+				printf("\nactive flag: %d\n", active_int);
+				printf("\nprotection flag: %d\n", protection_int);
 				printf("\nxini_int: %d\n", xini_int);
 				printf("\nxfin_int: %d\n", xfin_int);
 				printf("\nyini_int: %d\n", yini_int);
@@ -678,18 +707,54 @@ int video_settings_enc_ctx_socket_put(
 			case 8:
 				//Block Gop
 				printf("Datos del str: %s\n" , str);
+				printf("\n [SOCKET] el valor de Block Gop = %d\n",res2);
+				video_settings_enc_ctx->block_gop= res2;
+				clock_gettime( CLOCK_REALTIME, &ts2);
+				printf("\nTS2: %f\n", (float) (1.0*ts2.tv_nsec)*1e-9);
+				printf("TS2 - TS1: %f\n", (float) (1.0*(1.0*ts2.tv_nsec - ts1.tv_nsec*1.0)*1e-9 + 1.0*ts2.tv_sec - 1.0*ts1.tv_sec ));
+
+				memset(function,'\0', sizeof(function));
+				memset(value,'\0', sizeof(value));
+
+				h = 0;
+				j = 0;
+				aux = 0;
 
 				break;
 
 			case 9:
 				//Down Mode
 				printf("Datos del str: %s\n" , str);
+				printf("\n [SOCKET] el valor de Down Mode = %d\n",res2);
+				video_settings_enc_ctx->down_mode= res2;
+				clock_gettime( CLOCK_REALTIME, &ts2);
+				printf("\nTS2: %f\n", (float) (1.0*ts2.tv_nsec)*1e-9);
+				printf("TS2 - TS1: %f\n", (float) (1.0*(1.0*ts2.tv_nsec - ts1.tv_nsec*1.0)*1e-9 + 1.0*ts2.tv_sec - 1.0*ts1.tv_sec ));
+
+				memset(function,'\0', sizeof(function));
+				memset(value,'\0', sizeof(value));
+
+				h = 0;
+				j = 0;
+				aux = 0;
 
 				break;
 
 			case 10:
 				//Skip Frames
 				printf("Datos del str: %s\n" , str);
+				printf("\n [SOCKET] el valor de Skip Frames = %d\n",res2);
+				video_settings_enc_ctx->skip_frames= res2;
+				clock_gettime( CLOCK_REALTIME, &ts2);
+				printf("\nTS2: %f\n", (float) (1.0*ts2.tv_nsec)*1e-9);
+				printf("TS2 - TS1: %f\n", (float) (1.0*(1.0*ts2.tv_nsec - ts1.tv_nsec*1.0)*1e-9 + 1.0*ts2.tv_sec - 1.0*ts1.tv_sec ));
+
+				memset(function,'\0', sizeof(function));
+				memset(value,'\0', sizeof(value));
+
+				h = 0;
+				j = 0;
+				aux = 0;
 
 				break;
 		}
