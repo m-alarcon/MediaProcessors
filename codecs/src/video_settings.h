@@ -95,6 +95,11 @@ typedef struct video_settings_enc_ctx_s {
 	 */
 	int skip_frames;
 
+	/**
+	 * Video encoder rectangle list param
+	 */
+	char rectangle_list[1000];	
+
 } video_settings_enc_ctx_t;
 
 /**

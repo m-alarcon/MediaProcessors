@@ -90,7 +90,7 @@ SUITE(UTESTS_VIDEO_SETTINGS_CTX)
 		settings_cppstr= (std::string)"bit_rate_output=1234&"
 				"frame_rate_output=60&width_output=720&height_output=576&"
 				"gop_size=123&conf_preset=ultrafast&ql=23&num_rectangle=1&active=1&protection=1&xini=2&xfin=100&yini=2&yfin=99&"
-				"block_gop=0&down_mode=0&skip_frames=0";
+				"block_gop=0&down_mode=0&skip_frames=0&rectangle_list=0,0,0,854,0,481,1,427,854,240,481";
 		ret_code= video_settings_enc_ctx_restful_put(video_settings_enc_ctx,
 				settings_cppstr.c_str(), NULL);
 		CHECK(ret_code== STAT_SUCCESS);
@@ -112,6 +112,8 @@ SUITE(UTESTS_VIDEO_SETTINGS_CTX)
 		CHECK(video_settings_enc_ctx->block_gop== 0);
 		CHECK(video_settings_enc_ctx->down_mode== 0);
 		CHECK(video_settings_enc_ctx->skip_frames== 0);
+		CHECK(strncmp(video_settings_enc_ctx->rectangle_list, "0,0,0,854,0,481,1,427,854,240,481",
+				sizeof(video_settings_enc_ctx->rectangle_list))== 0);
 
 		/* Put settings via JSON */
 		settings_cppstr= (std::string)"{"
@@ -131,7 +133,8 @@ SUITE(UTESTS_VIDEO_SETTINGS_CTX)
 				"\"yfin\":99,"
 				"\"block_gop\":0,"
 				"\"down_mode\":0,"
-				"\"skip_frames\":0"
+				"\"skip_frames\":0,"
+				"\"rectangle_list\":\"0,0,0,854,0,481,1,427,854,240,481\""
 				"}";
 		ret_code= video_settings_enc_ctx_restful_put(video_settings_enc_ctx,
 				settings_cppstr.c_str(), NULL);
@@ -154,6 +157,8 @@ SUITE(UTESTS_VIDEO_SETTINGS_CTX)
 		CHECK(video_settings_enc_ctx->block_gop== 0);
 		CHECK(video_settings_enc_ctx->down_mode== 0);
 		CHECK(video_settings_enc_ctx->skip_frames== 0);
+		CHECK(strncmp(video_settings_enc_ctx->rectangle_list, "0,0,0,854,0,481,1,427,854,240,481",
+				sizeof(video_settings_enc_ctx->rectangle_list))== 0);
 
 		/* Get RESTful char string */
 		ret_code= video_settings_enc_ctx_restful_get(video_settings_enc_ctx,
@@ -167,6 +172,7 @@ SUITE(UTESTS_VIDEO_SETTINGS_CTX)
 		CHECK(rest_response_str!= NULL && strlen(rest_response_str)> 0);
 		if(rest_response_str== NULL)
 			goto end;
+		printf("%s\n", rest_response_str);
 		CHECK(strcmp(settings_cppstr.c_str(), rest_response_str)== 0);
 
 end:
