@@ -27,7 +27,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <time.h>
 
 #include <libcjson/cJSON.h>
 #include <libmediaprocsutils/uri_parser.h>
@@ -35,8 +34,6 @@
 #include <libmediaprocsutils/stat_codes.h>
 #include <libmediaprocsutils/check_utils.h>
 #include <libmediaprocs/proc_if.h>
-
-struct timespec ts1, ts2, ts3, ts4;
 
 video_settings_enc_ctx_t* video_settings_enc_ctx_allocate()
 {
@@ -72,8 +69,8 @@ int video_settings_enc_ctx_init(
 
 	video_settings_enc_ctx->bit_rate_output= 300*1024;
 	video_settings_enc_ctx->frame_rate_output= 15;
-	video_settings_enc_ctx->width_output= 640;//352;
-	video_settings_enc_ctx->height_output= 480;//288;
+	video_settings_enc_ctx->width_output= 352;
+	video_settings_enc_ctx->height_output= 288;
 	video_settings_enc_ctx->gop_size= 15;
 	memset((void*)video_settings_enc_ctx->conf_preset, 0,
 			sizeof(video_settings_enc_ctx->conf_preset));
@@ -88,6 +85,9 @@ int video_settings_enc_ctx_init(
 	video_settings_enc_ctx->block_gop= 0;
 	video_settings_enc_ctx->down_mode= 0;
 	video_settings_enc_ctx->skip_frames= 0;
+	memset((void*)video_settings_enc_ctx->rectangle_list, 0,
+			sizeof(video_settings_enc_ctx->rectangle_list));
+
 	return STAT_SUCCESS;
 }
 
@@ -129,7 +129,7 @@ int video_settings_enc_ctx_restful_put(
 			*gop_size_str= NULL, *sample_fmt_input_str= NULL,
 			*profile_str= NULL, *conf_preset_str= NULL, *ql_str= NULL, *num_rectangle_str= NULL,
 			*active_str= NULL, *protection_str= NULL, *xini_str= NULL, *xfin_str= NULL, *yini_str= NULL, *yfin_str= NULL,
-			*block_gop_str= NULL, *down_mode_str= NULL, *skip_frames_str= NULL;
+			*block_gop_str= NULL, *down_mode_str= NULL, *skip_frames_str= NULL, *rectangle_list_str= NULL;
 	LOG_CTX_INIT(log_ctx);
 
 	/* Check arguments */
@@ -238,6 +238,17 @@ int video_settings_enc_ctx_restful_put(
 		if(skip_frames_str!= NULL)
 			video_settings_enc_ctx->skip_frames= atoll(skip_frames_str);
 
+		/* 'rectangle_list' */
+		rectangle_list_str= uri_parser_query_str_get_value("rectangle_list", str);
+		if(rectangle_list_str!= NULL) {
+			CHECK_DO(strlen(rectangle_list_str)<
+					(sizeof(video_settings_enc_ctx->rectangle_list)- 1),
+					end_code= STAT_EINVAL; goto end);
+			memcpy((void*)video_settings_enc_ctx->rectangle_list, rectangle_list_str,
+					strlen(rectangle_list_str));
+			video_settings_enc_ctx->rectangle_list[strlen(rectangle_list_str)]= 0;
+		}
+
 	} else {
 
 		/* In the case string format is JSON-REST, parse to cJSON structure */
@@ -335,6 +346,18 @@ int video_settings_enc_ctx_restful_put(
 		if(cjson_aux!= NULL)
 			video_settings_enc_ctx->skip_frames= cjson_aux->valuedouble;
 
+		/* 'rectangle_list' */
+		cjson_aux= cJSON_GetObjectItem(cjson_rest, "rectangle_list");
+		if(cjson_aux!= NULL && cjson_aux->valuestring!= NULL) {
+			CHECK_DO(strlen(cjson_aux->valuestring)<
+					(sizeof(video_settings_enc_ctx->rectangle_list)- 1),
+					end_code= STAT_EINVAL; goto end);
+			memcpy((void*)video_settings_enc_ctx->rectangle_list,
+					cjson_aux->valuestring, strlen(cjson_aux->valuestring));
+			video_settings_enc_ctx->rectangle_list[strlen(cjson_aux->valuestring)]= 0;
+
+		}		
+
 		}
 	}
 
@@ -380,6 +403,8 @@ end:
 		free(down_mode_str);
 	if(skip_frames_str!= NULL)
 		free(skip_frames_str);
+	if(rectangle_list_str!= NULL)
+		free(rectangle_list_str);	
 	return end_code;
 }
 
@@ -468,10 +493,10 @@ int video_settings_enc_ctx_socket_put(
 
 		for (int i=0;i<strlen(str);i++)
 		{
-			if(str[i] != ',' && aux== 0){
+			if(str[i] != '/' && aux== 0){
 				function[0+j] = str[i];
 				j = j + 1;
-			}else if (str[i] ==','){
+			}else if (str[i] =='/'){
 				aux = 1;
 			}else{
 				value[0+h] = str[i];
@@ -598,7 +623,10 @@ int video_settings_enc_ctx_socket_put(
 				//Rectangles
 				printf("Datos del str: %s\n" , str);
 				printf("\n VALUE: %s \n", value);
-				int num_rect = 0, k = 0, m=0, n=0;
+				//strcpy(video_settings_enc_ctx->rectangle_list,value);
+				//memcpy((void*)video_settings_enc_ctx->rectangle_list, value,strlen(value));
+				
+/*				int num_rect = 0, k = 0, m=0, n=0;
 				int aux = 0;
 
 				for (int i=0;i<strlen(value);i++)
@@ -701,7 +729,7 @@ int video_settings_enc_ctx_socket_put(
 				memset(yfin_value,'\0',sizeof(yfin_value));
 
 				h = 0, j = 0, k = 0, m = 0, n = 0, aux = 0;
-				
+*/				
 				break;
 
 			case 8:
@@ -909,6 +937,16 @@ int video_settings_enc_ctx_restful_get(
 	cjson_aux= cJSON_CreateNumber((int)video_settings_enc_ctx->skip_frames);
 	CHECK_DO(cjson_aux!= NULL, goto end);
 	cJSON_AddItemToObject(cjson_rest, "skip_frames", cjson_aux);
+
+	/* 'rectangle_list' */ 
+	if(video_settings_enc_ctx->rectangle_list!= NULL &&
+			strlen((const char*)video_settings_enc_ctx->rectangle_list)> 0) {
+		cjson_aux= cJSON_CreateString((const char*) video_settings_enc_ctx->rectangle_list);
+	} else {
+		cjson_aux= cJSON_CreateNull();
+	}
+	CHECK_DO(cjson_aux!= NULL, goto end);
+	cJSON_AddItemToObject(cjson_rest, "rectangle_list", cjson_aux);	
 
 	*ref_cjson_rest= cjson_rest;
 	cjson_rest= NULL;
