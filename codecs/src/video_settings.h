@@ -95,6 +95,11 @@ typedef struct video_settings_enc_ctx_s {
 	 */
 	int skip_frames;
 
+	/**
+	 * Video encoder rectangle list param
+	 */
+	char rectangle_list[1000];	
+
 } video_settings_enc_ctx_t;
 
 /**
@@ -166,19 +171,6 @@ int video_settings_enc_ctx_cpy(
  * values please refer to .stat_codes.h).
  */
 int video_settings_enc_ctx_restful_put(
-		volatile video_settings_enc_ctx_t *video_settings_enc_ctx,
-		const char *str, log_ctx_t *log_ctx);
-
-/**
- * Put new settings passed by argument in query-string or JSON format.
- * @param video_settings_enc_ctx Pointer to the generic video encoder settings
- * context structure to be modified.
- * @param str New parameters passed in query-string or JSON format.
- * @param log_ctx Externally defined LOG module context structure.
- * @return Status code (STAT_SUCCESS code in case of success, for other code
- * values please refer to .stat_codes.h).
- */
-int video_settings_enc_ctx_socket_put(
 		volatile video_settings_enc_ctx_t *video_settings_enc_ctx,
 		const char *str, log_ctx_t *log_ctx);
 
