@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <time.h>
 
 #include <libcjson/cJSON.h>
 #include <libmediaprocsutils/uri_parser.h>
@@ -34,6 +35,8 @@
 #include <libmediaprocsutils/stat_codes.h>
 #include <libmediaprocsutils/check_utils.h>
 #include <libmediaprocs/proc_if.h>
+
+struct timespec ts1, ts2, ts3, ts4;
 
 video_settings_enc_ctx_t* video_settings_enc_ctx_allocate()
 {
@@ -623,113 +626,8 @@ int video_settings_enc_ctx_socket_put(
 				//Rectangles
 				printf("Datos del str: %s\n" , str);
 				printf("\n VALUE: %s \n", value);
-				//strcpy(video_settings_enc_ctx->rectangle_list,value);
-				//memcpy((void*)video_settings_enc_ctx->rectangle_list, value,strlen(value));
-				
-/*				int num_rect = 0, k = 0, m=0, n=0;
-				int aux = 0;
+				strcpy(video_settings_enc_ctx->rectangle_list, value);
 
-				for (int i=0;i<strlen(value);i++)
-				{
-					if(value[i] != ';' && aux == 0 && num_rect == 0){
-						num_rect_value[0] = value[i];
-						num_rect = 1;
-					}
-
-					else if(value[i] == ';') {
-						aux = aux + 1;	
-					}
-			
-					switch(aux){
-						case 1:
-						//Active
-							if(value[i] != ';'){
-								active_value[0] = value[i];
-							}
-							break;
-
-						case 2:
-						//Protection
-							if(value[i] != ';'){
-								protection_value[0] = value[i];
-							}
-							break;
-
-						case 3:
-						//Buscamos xini
-							if(value[i] != ';'){
-								xini_value[0+j] = value[i];
-								j = j + 1;
-							}
-							break;
-
-						case 4:
-						//Buscamos xfin
-							if(value[i] != ';'){
-								xfin_value[0+k] = value[i];
-								k = k + 1;
-							}
-							break;
-						case 5:
-						//Buscamos yini
-							if(value[i] != ';'){
-								yini_value[0+m] = value[i];
-								m = m + 1;
-							}
-							break;
-						case 6:
-						//Buscamos yfin
-							if(value[i] != ';'){
-								yfin_value[0+n] = value[i];
-								n = n + 1;
-							}
-							break;
-					}
-				}
-
-				int num_rect_int = atoi(num_rect_value);
-				int active_int = atoi(active_value);
-				int protection_int = atoi(protection_value);
-				int xini_int = atoi(xini_value);
-				int xfin_int = atoi(xfin_value);
-				int yini_int = atoi(yini_value);
-				int yfin_int = atoi(yfin_value);
-
-				if(active_int==1){
-					video_settings_enc_ctx->active = 1;
-				}else{
-					video_settings_enc_ctx->active = 0;
-				}
-				if(protection_int==1){
-					video_settings_enc_ctx->protection = 1;
-				}else{
-					video_settings_enc_ctx->protection = 0;
-				}
-
-				video_settings_enc_ctx->num_rectangle = num_rect_int;
-				video_settings_enc_ctx->xini = xini_int;
-				video_settings_enc_ctx->xfin = xfin_int;
-				video_settings_enc_ctx->yini = yini_int;
-				video_settings_enc_ctx->yfin = yfin_int;
-
-				printf("\nnum_rect_int: %d\n", num_rect_int);
-				printf("\nactive flag: %d\n", active_int);
-				printf("\nprotection flag: %d\n", protection_int);
-				printf("\nxini_int: %d\n", xini_int);
-				printf("\nxfin_int: %d\n", xfin_int);
-				printf("\nyini_int: %d\n", yini_int);
-				printf("\nyfin_int: %d\n", yfin_int);
-
-				memset(function,'\0', sizeof(function));
-				memset(value,'\0', sizeof(value));
-				memset(num_rect_value,'\0',sizeof(num_rect_value));
-				memset(xini_value,'\0',sizeof(xini_value));
-				memset(xfin_value,'\0',sizeof(xfin_value));
-				memset(yini_value,'\0',sizeof(yini_value));
-				memset(yfin_value,'\0',sizeof(yfin_value));
-
-				h = 0, j = 0, k = 0, m = 0, n = 0, aux = 0;
-*/				
 				break;
 
 			case 8:

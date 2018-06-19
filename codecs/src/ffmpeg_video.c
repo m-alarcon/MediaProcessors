@@ -141,6 +141,10 @@ int ffmpeg_video_enc_ctx_init(ffmpeg_video_enc_ctx_t *ffmpeg_video_enc_ctx,
                 video_settings_enc_ctx->skip_frames, 0);
     }
 
+    if(strlen(video_settings_enc_ctx->rectangle_list)> 0) {
+        av_opt_set(avcodecctx->priv_data, "rect_list",
+                video_settings_enc_ctx->rectangle_list, 0);
+    }
 
 	if(strlen(video_settings_enc_ctx->conf_preset)> 0) {
 		av_opt_set(avcodecctx->priv_data, "preset",
