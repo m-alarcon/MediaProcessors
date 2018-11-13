@@ -430,6 +430,7 @@ int ffmpeg_video_dec_ctx_init(ffmpeg_video_dec_ctx_t *ffmpeg_video_dec_ctx,
     avcodecctx->pix_fmt= AV_PIX_FMT_YUV420P; // natively supported
 	avcodecctx->width= 640;//352;
 	avcodecctx->height= 480;//288;
+
 	// {
     //if(avcodec->capabilities& AV_CODEC_CAP_TRUNCATED) // Do not use!!!
     //	avcodecctx->flags|=
