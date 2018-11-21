@@ -1,4 +1,7 @@
 
+#ifndef MEDIAPROCESSORS_SRC_PAYLOADER_RTSP_H_
+#define MEDIAPROCESSORS_SRC_PAYLOADER_RTSP_H_
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -25,3 +28,5 @@ extern const proc_if_t proc_if_payloader_upm_rtsp_dmux;
 #ifdef __cplusplus
 } //extern "C"
 #endif
+
+#endif /* MEDIAPROCESSORS_SRC_PAYLOADER_RTSP_H_ */

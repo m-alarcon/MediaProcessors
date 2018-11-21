@@ -86,27 +86,27 @@ typedef struct payloader_upm_rtsp_mux_ctx_s {
 	 * events are signaled (e.g. multiplexing frame of data when a new frame
 	 * is available at the input).
 	 */
-	NULL;
+//	NULL;
 //	TaskScheduler *taskScheduler;
 	/**
 	 * Live555's UsageEnvironment Class.
 	 */
-	NULL;
+//	NULL;
 //	UsageEnvironment *usageEnvironment;
 	/**
 	 * Live555's RTSPServer Class.
 	 */
-	NULL;
+//	NULL;
 //	RTSPServer *rtspServer;
 	/**
 	 * Live555's scheduler thread.
 	 */
-	NULL;
+//	NULL;
 //	pthread_t taskScheduler_thread;
 	/**
 	 * Live555's media sessions server.
 	 */
-	NULL;
+//	NULL;
 //	ServerMediaSession *serverMediaSession;
 	/**
 	 * Reserved for future use: other parameters here ...
@@ -151,7 +151,7 @@ typedef struct payloader_upm_rtsp_es_mux_ctx_s {
 	/**
 	 * Live555's SimpleMediaSubsession Class.
 	 */
-	NULL;
+//	NULL;
 //	SimpleMediaSubsession *simpleMediaSubsession;
 	/**
 	 * Externally defined Live555's TaskScheduler Class.
@@ -159,7 +159,7 @@ typedef struct payloader_upm_rtsp_es_mux_ctx_s {
 	 * events are signaled (e.g. multiplexing frame of data when a new frame
 	 * is available at the input).
 	 */
-	NULL;
+//	NULL;
 //	TaskScheduler *taskScheduler;
 	/**
 	 * Reserved for future use: other parameters here ...
@@ -177,3 +177,52 @@ typedef struct payloader_upm_rtsp_dmux_settings_ctx_s {
 	 */
 	struct muxers_settings_dmux_ctx_s muxers_settings_dmux_ctx;
 } payloader_upm_rtsp_dmux_settings_ctx_t;
+
+/* **** Implementaciones **** */
+
+extern "C" {
+const proc_if_t proc_if_payloader_upm_rtsp_mux=
+{
+	"payloader_upm_rtsp_mux", "multiplexer", "application/octet-stream",
+	(uint64_t)PROC_FEATURE_WR,
+	NULL, //live555_rtsp_mux_open,
+	NULL, //live555_rtsp_mux_close,
+	NULL, //live555_rtsp_mux_rest_put,
+	NULL, //live555_rtsp_mux_rest_get,
+	NULL, //live555_rtsp_mux_process_frame,
+	NULL, //live555_rtsp_mux_opt,
+	NULL, // input proc_frame_ctx to "private-frame-format"
+	NULL, // "private-frame-format" release
+	NULL, // "private-frame-format" to proc_frame_ctx
+};
+
+static const proc_if_t proc_if_payloader_upm_rtsp_es_mux=
+{
+	"payloader_upm_rtsp_mux", "multiplexer", "application/octet-stream",
+	(uint64_t)PROC_FEATURE_WR,
+	NULL, //live555_rtsp_es_mux_open,
+	NULL, //live555_rtsp_es_mux_close,
+	NULL, //live555_rtsp_es_mux_rest_put // used internally only (not in API)
+	NULL, //live555_rtsp_es_mux_rest_get,
+	NULL, //live555_rtsp_es_mux_process_frame,
+	NULL, //live555_rtsp_es_mux_opt
+	NULL,
+	NULL,
+	NULL,
+};
+
+const proc_if_t proc_if_payloader_upm_rtsp_dmux=
+{
+	"payloader_upm_rtsp_dmux", "demultiplexer", "application/octet-stream",
+	(uint64_t)PROC_FEATURE_RD,
+	NULL, //live555_rtsp_dmux_open,
+	NULL, //live555_rtsp_dmux_close,
+	NULL, //live555_rtsp_dmux_rest_put,
+	NULL, //live555_rtsp_dmux_rest_get,
+	NULL, //live555_rtsp_dmux_process_frame,
+	NULL, //live555_rtsp_dmux_opt,
+	NULL, // input proc_frame_ctx to "private-frame-format"
+	NULL, // "private-frame-format" release
+	NULL, // "private-frame-format" to proc_frame_ctx
+};
+} //extern "C"
