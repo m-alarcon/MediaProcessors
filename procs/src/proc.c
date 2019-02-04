@@ -253,6 +253,8 @@ void proc_close(proc_ctx_t **ref_proc_ctx)
 int proc_send_frame(proc_ctx_t *proc_ctx,
 		const proc_frame_ctx_t *proc_frame_ctx)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[proc.c] proc_send_frame \n");
 	int end_code;
 	LOG_CTX_INIT(NULL);
 

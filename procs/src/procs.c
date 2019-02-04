@@ -412,6 +412,8 @@ void procs_close(procs_ctx_t **ref_procs_ctx)
 
 int procs_opt(procs_ctx_t *procs_ctx, const char *tag, ...)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[procs.c] procs_opt \n");
 	va_list arg;
 	int end_code= STAT_ERROR;
 	LOG_CTX_INIT(NULL);
@@ -443,6 +445,8 @@ int procs_opt(procs_ctx_t *procs_ctx, const char *tag, ...)
 int procs_send_frame(procs_ctx_t *procs_ctx, int proc_id,
 		const proc_frame_ctx_t *proc_frame_ctx)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[procs.c] procs_send_frame \n");
 	int end_code= STAT_ERROR;
 	procs_reg_elem_t *procs_reg_elem;
 	fair_lock_t *p_fair_lock= NULL;
@@ -524,29 +528,38 @@ end:
 
 static int register_proc_if(const proc_if_t *proc_if, log_ctx_t *log_ctx)
 {
+printf("\n [procs.c] register_proc_if \n");
 	llist_t *n;
 	int ret_code, end_code= STAT_ERROR;
 	proc_if_t *proc_if_cpy= NULL;
 	LOG_CTX_INIT(log_ctx);
 
 	/* Check arguments */
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
 	CHECK_DO(procs_module_ctx!= NULL, return STAT_ERROR);
 	CHECK_DO(proc_if!= NULL, return STAT_ERROR);
 
 	/*  Check that module API critical section is locked */
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
 	ret_code= pthread_mutex_trylock(&procs_module_ctx->module_api_mutex);
 	CHECK_DO(ret_code== EBUSY, return STAT_ERROR);
 
 	/* Check if processor is already register with given "name" */
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
 	for(n= procs_module_ctx->proc_if_llist; n!= NULL; n= n->next) {
 		proc_if_t *proc_if_nth= (proc_if_t*)n->data;
 		CHECK_DO(proc_if_nth!= NULL, continue);
+printf("\n Nombre proc: %s\n", proc_if_nth->proc_name);
+printf("\n Nombre 1 proc_if_nth: %s\n", proc_if_nth->proc_name);
+printf("\n Nombre 1 proc_if: %s\n", proc_if->proc_name);
 		if(strcmp(proc_if_nth->proc_name, proc_if->proc_name)== 0) {
+printf("\n Nombre 2 proc_if_nth: %s\n", proc_if_nth->proc_name);
+printf("\n Nombre 2 proc_if: %s\n", proc_if->proc_name);
 			end_code= STAT_ECONFLICT;
 			goto end;
 		}
 	}
-
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
 	/* Allocate a copy of the processor type in the list */
 	proc_if_cpy= proc_if_dup(proc_if);
 	//LOGV("Registering processor with name: '%s'\n",
@@ -557,8 +570,13 @@ static int register_proc_if(const proc_if_t *proc_if, log_ctx_t *log_ctx)
 
 	end_code= STAT_SUCCESS;
 end:
-	if(end_code!= STAT_SUCCESS)
+	if(end_code!= STAT_SUCCESS){
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
 		proc_if_release(&proc_if_cpy);
+printf("\n El end_code es: %d \n", end_code);
+printf("\n El end_code deberia ser: %d \n", STAT_SUCCESS);
+printf("\n El STAT_ECONFLICT es: %d \n", STAT_ECONFLICT);
+	}
 	return end_code;
 }
 
@@ -647,6 +665,10 @@ static int procs_instance_opt(procs_ctx_t *procs_ctx, const char *tag,
 		const char *proc_name= va_arg(arg, const char*);
 		const char *settings_str= va_arg(arg, const char*);
 		char **ref_rest_str= va_arg(arg, char**);
+printf("===================== %s %d\n", __FILE__, __LINE__); fflush(stdout); //FIXME!!
+printf("\n proc_name: %s\n", proc_name);
+printf("\n settings_str: %s\n", settings_str);
+printf("\n id: %d \n", id);
 		end_code= proc_register(procs_ctx, proc_name, settings_str,
 				LOG_CTX_GET(), &id, arg);
 		if(end_code== STAT_SUCCESS && id>= 0) {
@@ -835,6 +857,7 @@ static int proc_register(procs_ctx_t *procs_ctx, const char *proc_name,
 	/* Open processor */
 	proc_ctx= proc_open(proc_if, settings_str, proc_id, fifo_ctx_maxsize,
 			LOG_CTX_GET(), arg);
+printf("\n proc_if name %s: \n", proc_if->proc_name);
 	CHECK_DO(proc_ctx!= NULL, goto end);
 
 	/* Register processor context structure.
@@ -920,6 +943,8 @@ static int proc_unregister(procs_ctx_t *procs_ctx, int proc_id,
 static int procs_id_opt(procs_ctx_t *procs_ctx, const char *tag,
 		log_ctx_t *log_ctx, va_list arg)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[procs.c] procs_id_opt \n");
 	procs_reg_elem_t *procs_reg_elem;
 	int end_code= STAT_ERROR, proc_id= -1;
 	int flag_procs_api_locked= 0, flag_proc_ctx_api_locked= 0;
@@ -948,11 +973,15 @@ static int procs_id_opt(procs_ctx_t *procs_ctx, const char *tag,
 	flag_procs_api_locked= 1;
 
 	/* Lock processor (PROC) API critical section */
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
 	proc_id= va_arg(arg, int);
 	CHECK_DO(proc_id>= 0 && proc_id< PROCS_MAX_NUM_PROC_INSTANCES, goto end);
 	procs_reg_elem= &procs_ctx->procs_reg_elem_array[proc_id];
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
 	LOCK_PROCS_REG_ELEM_API(procs_ctx, procs_reg_elem, goto end);
 	flag_proc_ctx_api_locked= 1;
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+
 
 	/* Fetch processor */
 	proc_ctx= procs_id_opt_fetch_proc_ctx(procs_ctx, proc_id, tag, arg,
@@ -1044,6 +1073,7 @@ static int procs_id_get(procs_reg_elem_t *procs_reg_elem, proc_ctx_t *proc_ctx,
 
 	end_code= STAT_SUCCESS;
 end:
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
 	if(cjson_rest!= NULL)
 		cJSON_Delete(cjson_rest);
 	return end_code;
@@ -1066,6 +1096,8 @@ end:
 static proc_ctx_t* procs_id_opt_fetch_proc_ctx(procs_ctx_t *procs_ctx,
 		int proc_id, const char *tag, va_list arg, log_ctx_t *log_ctx)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[procs.c] procs_id_opt_fetch_proc_ctx \n");
 	va_list arg_cpy, va_list_empty;
 	procs_reg_elem_t *procs_reg_elem;
 	int ret_code;
@@ -1082,6 +1114,7 @@ static proc_ctx_t* procs_id_opt_fetch_proc_ctx(procs_ctx_t *procs_ctx,
 	LOG_CTX_INIT(log_ctx);
 
 	/* Check arguments */
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
 	CHECK_DO(procs_ctx!= NULL, return NULL);
 	CHECK_DO(proc_id>= 0 && proc_id< PROCS_MAX_NUM_PROC_INSTANCES, return NULL);
 	CHECK_DO(tag!= NULL, return NULL);
@@ -1089,6 +1122,7 @@ static proc_ctx_t* procs_id_opt_fetch_proc_ctx(procs_ctx_t *procs_ctx,
 	//log_ctx allowed to be NULL
 
 	/* Get register element and current processor references */
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
 	procs_reg_elem= &procs_ctx->procs_reg_elem_array[proc_id];
 	proc_ctx_curr= procs_reg_elem->proc_ctx;
 	CHECK_DO(proc_ctx_curr!= NULL, goto end);
@@ -1096,6 +1130,7 @@ static proc_ctx_t* procs_id_opt_fetch_proc_ctx(procs_ctx_t *procs_ctx,
 	/* Check that module instance critical section is locked and processor API
 	 * level critical section is also locked ("double locked").
 	 */
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
 	ret_code= pthread_mutex_trylock(&procs_ctx->api_mutex);
 	CHECK_DO(ret_code== EBUSY, goto end);
 	ret_code= pthread_mutex_trylock(&procs_reg_elem->api_mutex);
@@ -1104,8 +1139,11 @@ static proc_ctx_t* procs_id_opt_fetch_proc_ctx(procs_ctx_t *procs_ctx,
 	/* In the case we have a PUT operation request we may have to treat a
 	 * special case (code below). Otherwise, we're done.
 	 */
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("============El TAG es: %s\n", tag);
 	if(!TAG_IS("PROCS_ID_PUT")) {
 		proc_ctx_ret= proc_ctx_curr;
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
 		goto end;
 	}
 
@@ -1117,6 +1155,7 @@ static proc_ctx_t* procs_id_opt_fetch_proc_ctx(procs_ctx_t *procs_ctx,
 	/* Copy variable list of arguments to avoid interfering with original.
 	 * Get settings string argument corresponding to the PUT operation.
 	 */
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
 	va_copy(arg_cpy, arg);
 	settings_str_arg= va_arg(arg_cpy, const char*);
 	if(settings_str_arg== NULL || strlen(settings_str_arg)== 0) {
@@ -1126,6 +1165,7 @@ static proc_ctx_t* procs_id_opt_fetch_proc_ctx(procs_ctx_t *procs_ctx,
 	}
 
 	/* Get current processor name */
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
 	proc_if_curr= proc_ctx_curr->proc_if;
 	CHECK_DO(proc_if_curr!= NULL, goto end);
 	proc_name_curr= proc_if_curr->proc_name;
@@ -1133,6 +1173,7 @@ static proc_ctx_t* procs_id_opt_fetch_proc_ctx(procs_ctx_t *procs_ctx,
 
 	/* Guess string representation format (JSON-REST or Query) */
 	//LOGV("'%s'\n", str); //comment-me
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
 	flag_is_query= (settings_str_arg[0]=='{' &&
 			settings_str_arg[strlen(settings_str_arg)-1]=='}')? 0: 1;
 

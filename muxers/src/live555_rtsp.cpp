@@ -601,6 +601,8 @@ const proc_if_t proc_if_live555_rtsp_dmux=
 static proc_ctx_t* live555_rtsp_mux_open(const proc_if_t *proc_if,
 		const char *settings_str, log_ctx_t *log_ctx, va_list arg)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] live555_rtsp_mux_open \n");
 	int ret_code, end_code= STAT_ERROR;
 	live555_rtsp_mux_ctx_t *live555_rtsp_mux_ctx= NULL;
 	volatile live555_rtsp_mux_settings_ctx_t *live555_rtsp_mux_settings_ctx=
@@ -655,6 +657,8 @@ static int live555_rtsp_mux_init_given_settings(
 		const muxers_settings_mux_ctx_t *muxers_settings_mux_ctx,
 		log_ctx_t *log_ctx)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] live555_rtsp_mux_init_given_settings \n");
 	char *stream_session_name;
 	int ret_code, end_code= STAT_ERROR;
 	int port= 8554;
@@ -735,6 +739,8 @@ end:
  */
 static void live555_rtsp_mux_close(proc_ctx_t **ref_proc_ctx)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] live555_rtsp_mux_close \n");
 	live555_rtsp_mux_ctx_t *live555_rtsp_mux_ctx= NULL;
 	LOG_CTX_INIT(NULL);
 	LOGD(">>%s\n", __FUNCTION__); //comment-me
@@ -767,6 +773,8 @@ static void live555_rtsp_mux_close(proc_ctx_t **ref_proc_ctx)
 static void live555_rtsp_mux_deinit_except_settings(
 		live555_rtsp_mux_ctx_t *live555_rtsp_mux_ctx, log_ctx_t *log_ctx)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] live555_rtsp_mux_deinit_except_settings \n");
 	void *thread_end_code= NULL;
 	proc_muxer_mux_ctx_t *proc_muxer_mux_ctx= NULL; // Do not release
 	LOG_CTX_INIT(log_ctx);
@@ -845,6 +853,8 @@ static void live555_rtsp_mux_deinit_except_settings(
 static int live555_rtsp_mux_process_frame(proc_ctx_t *proc_ctx,
 		fifo_ctx_t* iput_fifo_ctx, fifo_ctx_t* oput_fifo_ctx)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] live555_rtsp_mux_process_frame \n");
 	int ret_code, end_code= STAT_ERROR;
 	live555_rtsp_mux_ctx_t *live555_rtsp_mux_ctx= NULL; // Do not release
 	proc_muxer_mux_ctx_t *proc_muxer_mux_ctx= NULL; // DO not release
@@ -899,6 +909,8 @@ end:
 static int live555_rtsp_mux_opt(proc_ctx_t *proc_ctx, const char *tag,
 		va_list arg)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] live555_rtsp_mux_opt \n");
 #define PROC_ID_STR_FMT "{\"elementary_stream_id\":%d}"
 	int ret_code, end_code= STAT_ERROR;
 	live555_rtsp_mux_ctx_t *live555_rtsp_mux_ctx= NULL;
@@ -963,6 +975,8 @@ end:
  */
 static int live555_rtsp_mux_rest_put(proc_ctx_t *proc_ctx, const char *str)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] live555_rtsp_mux_rest_put \n");
 	int ret_code;
 	live555_rtsp_mux_ctx_t *live555_rtsp_mux_ctx= NULL;
 	volatile live555_rtsp_mux_settings_ctx_t *
@@ -1006,6 +1020,8 @@ static int live555_rtsp_mux_rest_put(proc_ctx_t *proc_ctx, const char *str)
 static int live555_rtsp_mux_rest_get(proc_ctx_t *proc_ctx,
 		const proc_if_rest_fmt_t rest_fmt, void **ref_reponse)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] live555_rtsp_mux_rest_get \n");
 	int ret_code, end_code= STAT_ERROR;
 	live555_rtsp_mux_ctx_t *live555_rtsp_mux_ctx= NULL;
 	procs_ctx_t *procs_ctx_es_muxers= NULL; // Do not release
@@ -1111,6 +1127,8 @@ end:
 static int live555_rtsp_mux_rest_get_es_array(procs_ctx_t *procs_ctx_es_muxers,
 		cJSON **ref_cjson_es_array, log_ctx_t *log_ctx)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] live555_rtsp_mux_rest_get_es_array \n");
 	int i, ret_code, procs_num= 0, end_code= STAT_ERROR;
 	cJSON *cjson_es_array= NULL, *cjson_procs_rest= NULL,
 			*cjson_procs_es_rest= NULL, *cjson_procs_es_rest_settings= NULL;
@@ -1221,6 +1239,8 @@ static int live555_rtsp_mux_settings_ctx_init(
 		volatile live555_rtsp_mux_settings_ctx_t *live555_rtsp_mux_settings_ctx,
 		log_ctx_t *log_ctx)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] live555_rtsp_mux_settings_ctx_init \n");
 	int ret_code;
 	volatile muxers_settings_mux_ctx_t *muxers_settings_mux_ctx= NULL;
 	LOG_CTX_INIT(log_ctx);
@@ -1252,6 +1272,8 @@ static void live555_rtsp_mux_settings_ctx_deinit(
 		volatile live555_rtsp_mux_settings_ctx_t *live555_rtsp_mux_settings_ctx,
 		log_ctx_t *log_ctx)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] live555_rtsp_mux_settings_ctx_deinit \n");
 	volatile muxers_settings_mux_ctx_t *muxers_settings_mux_ctx= NULL;
 	LOG_CTX_INIT(log_ctx);
 
@@ -1304,6 +1326,8 @@ static void* taskScheduler_thr(void *t)
 static proc_ctx_t* live555_rtsp_es_mux_open(const proc_if_t *proc_if,
 		const char *settings_str, log_ctx_t *log_ctx, va_list arg)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] live555_rtsp_es_mux_open \n");
 	int ret_code, end_code= STAT_ERROR;
 	live555_rtsp_es_mux_ctx_t *live555_rtsp_es_mux_ctx= NULL;
 	volatile live555_rtsp_es_mux_settings_ctx_t *
@@ -1372,6 +1396,8 @@ static proc_ctx_t* live555_rtsp_es_mux_open(const proc_if_t *proc_if,
  */
 static void live555_rtsp_es_mux_close(proc_ctx_t **ref_proc_ctx)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] live555_rtsp_es_mux_close \n");
 	live555_rtsp_es_mux_ctx_t *live555_rtsp_es_mux_ctx= NULL;
 	LOG_CTX_INIT(NULL);
 	LOGD(">>%s\n", __FUNCTION__); //comment-me
@@ -1404,6 +1430,8 @@ static void live555_rtsp_es_mux_close(proc_ctx_t **ref_proc_ctx)
 static int live555_rtsp_es_mux_process_frame(proc_ctx_t *proc_ctx,
 		fifo_ctx_t* iput_fifo_ctx, fifo_ctx_t* oput_fifo_ctx)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] live555_rtsp_es_mux_process_frame \n");
 	int ret_code, end_code= STAT_ERROR;
 	live555_rtsp_es_mux_ctx_t *live555_rtsp_es_mux_ctx= NULL; //Do not release
 	proc_frame_ctx_t *proc_frame_ctx= NULL;
@@ -1455,6 +1483,8 @@ end:
  */
 static int live555_rtsp_es_mux_rest_put(proc_ctx_t *proc_ctx, const char *str)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] live555_rtsp_es_mux_rest_put \n");
 	int flag_is_query, end_code= STAT_ERROR;
 	live555_rtsp_es_mux_ctx_t *live555_rtsp_es_mux_ctx= NULL;
 	volatile live555_rtsp_es_mux_settings_ctx_t *
@@ -1561,6 +1591,8 @@ end:
 static int live555_rtsp_es_mux_rest_get(proc_ctx_t *proc_ctx,
 		const proc_if_rest_fmt_t rest_fmt, void **ref_reponse)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] live555_rtsp_es_mux_rest_get \n");
 	int end_code= STAT_ERROR;
 	live555_rtsp_es_mux_ctx_t *live555_rtsp_es_mux_ctx= NULL;
 	volatile live555_rtsp_es_mux_settings_ctx_t *
@@ -1658,6 +1690,8 @@ static int live555_rtsp_es_mux_settings_ctx_init(
 		volatile live555_rtsp_es_mux_settings_ctx_t *
 		live555_rtsp_es_mux_settings_ctx, log_ctx_t *log_ctx)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] live555_rtsp_es_mux_settings_ctx_init \n");
 	LOG_CTX_INIT(log_ctx);
 
 	/* Check arguments */
@@ -1675,6 +1709,8 @@ static void live555_rtsp_es_mux_settings_ctx_deinit(
 		volatile live555_rtsp_es_mux_settings_ctx_t *
 		live555_rtsp_es_mux_settings_ctx, log_ctx_t *log_ctx)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] live555_rtsp_es_mux_settings_ctx_deinit \n");
 	LOG_CTX_INIT(log_ctx);
 
 	/* Check arguments */
@@ -1810,6 +1846,8 @@ SimpleFramedSource::~SimpleFramedSource()
 
 void SimpleFramedSource::doGetNextFrame()
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] SimpleFramedSource \n");
 	LOGD_CTX_INIT(m_log_ctx);
 	LOGD(">>SimpleFramedSource::doGetNextFrame\n"); //comment-me
 
@@ -1864,6 +1902,8 @@ void SimpleFramedSource::deliverFrame0(void *simpleFramedSource_opaque)
  */
 void SimpleFramedSource::deliverFrame()
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] SimpleFramedSource::deliverFrame \n");
 	uint8_t *newFrame= NULL;
 	int ret_code, newFrameSize= 0;
 	proc_frame_ctx_t *proc_frame_ctx_show= NULL; //Do not release but modify
@@ -1955,6 +1995,8 @@ SimpleMediaSubsession::SimpleMediaSubsession(UsageEnvironment &env,
 
 void SimpleMediaSubsession::deliverFrame(proc_frame_ctx_t **ref_proc_frame_ctx)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] SimpleMediaSubsession::deliverFrame \n");
 	LOG_CTX_INIT(m_log_ctx);
 
 	/* Check arguments */
@@ -2046,6 +2088,8 @@ void SimpleMediaSubsession::closeStreamSource(FramedSource* inputSource)
 RTPSink* SimpleMediaSubsession::createNewRTPSink(Groupsock* rtpGroupsock,
 		unsigned char rtpPayloadTypeIfDynamic, FramedSource* inputSource)
 {
+printf("=====================%d\n", __LINE__); fflush(stdout); //FIXME!!
+printf("[live555_rtsp.cpp] SimpleMedaSubsession::createNewRTPSink \n");
 	char *sdp_p; // Do not release
 	RTPSink *rtpSink= NULL;
 	char *type_str= NULL, *subtype_str= NULL;
